@@ -1,0 +1,13 @@
+<div id="app-countdown" 
+     data-shop="{{ shop.permanent_domain }}">
+</div>
+
+<script src="{{ 'countdown.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Countdown Timer",
+  "target": "section",
+  "settings": []
+}
+{% endschema %}
