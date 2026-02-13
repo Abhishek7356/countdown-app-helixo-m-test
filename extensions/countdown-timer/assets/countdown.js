@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         endTime = new Date(timer.endAt).getTime();
 
         const textColor = timer.textColor || '#000000';
-        // const bgColor = timer.bgColor || '#ffffff';
+        const bgColor = timer.bgColor || '#ffffff';
         const fontSize = timer.fontSize || '16px';
 
         // 🔥 SIZE
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             align-items:center;
             justify-content:center;
             padding:${padding};
+            background-color:${bgColor};
             gap:10px;
             font-family: Helvetica, Arial, sans-serif;
             border-radius:12px;

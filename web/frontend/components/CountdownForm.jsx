@@ -7,22 +7,25 @@ import {
     Frame,
 } from "@shopify/polaris";
 import { useState, useCallback } from "react";
+import { splitDateTime } from "../utils/dateUtils";
 
-export default function CountdownForm({ onClose }) {
+export default function CountdownForm({ onClose, timer }) {
+    const start = splitDateTime(timer?.startAt);
+    const end = splitDateTime(timer?.endAt);
     const [form, setForm] = useState({
-        title: "",
-        startDate: "",
-        startTime: "",
-        endDate: "",
-        endTime: "",
-        description: "",
-        bgColor: "#22c55e",
-        textColor: "#ffffff",
-        size: "medium",
-        position: "top",
-        urgency: "none",
+        title: timer?.title || "",
+        startDate: start.date,
+        startTime: start.time,
+        endDate: end.date,
+        endTime: end.time,
+        description: timer?.description || "",
+        bgColor: timer?.bgColor || "#22c55e",
+        textColor: timer?.textColor || "#ffffff",
+        size: timer?.size || "medium",
+        position: timer?.position || "top",
+        urgency: timer?.urgency || "none",
     });
-
+    console.log(timer)
     const [loading, setLoading] = useState(false);
     const [toastActive, setToastActive] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
@@ -35,12 +38,13 @@ export default function CountdownForm({ onClose }) {
     const handleChange = (field) => (value) =>
         setForm({ ...form, [field]: value });
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (action) => {
         try {
             setLoading(true);
-
-            const res = await fetch("/api/countdown/create", {
-                method: "POST",
+            const apiUrl = action == "edit" ? `/api/countdown/update/${timer?._id}` : "/api/countdown/create"
+            const apiMethod = action == "edit" ? "PUT" : "POST"
+            const res = await fetch(apiUrl, {
+                method: apiMethod,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
             });
@@ -48,7 +52,7 @@ export default function CountdownForm({ onClose }) {
             const data = await res.json();
 
             if (data.success) {
-                setToastMessage("Timer created successfully");
+                setToastMessage(`Timer ${type}ed successfully`);
                 setToastActive(true);
                 onClose();
             } else {
@@ -56,6 +60,7 @@ export default function CountdownForm({ onClose }) {
                 setToastActive(true);
             }
         } catch (err) {
+            console.log(err.message)
             setToastMessage("Something went wrong");
             setToastActive(true);
         } finally {
@@ -170,13 +175,19 @@ export default function CountdownForm({ onClose }) {
                     onChange={handleChange("urgency")}
                 />
 
-                <Button
+                {timer ? <Button
                     variant="primary"
                     loading={loading}
-                    onClick={handleSubmit}
+                    onClick={() => handleSubmit("edit")}
+                >
+                    Update timer
+                </Button> : <Button
+                    variant="primary"
+                    loading={loading}
+                    onClick={() => handleSubmit("create")}
                 >
                     Create timer
-                </Button>
+                </Button>}
 
             </FormLayout>
 

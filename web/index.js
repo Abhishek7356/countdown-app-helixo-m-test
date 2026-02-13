@@ -36,7 +36,7 @@ app.post(
 
 app.use(cors({
   origin: "*",
-  // methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
 }));
 
 // If you are adding routes outside of the /api path, remember to
