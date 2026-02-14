@@ -9,6 +9,7 @@ import PrivacyWebhookHandlers from "./privacy.js";
 import connectDB from "./config/db.js";
 import countdownRoutes from "./routes/countdown.js";
 import publicRoutes from "./routes/public.js";
+import { appInstallMiddleware } from "./middlewares/appInstallMiddleware.js";
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
@@ -27,6 +28,7 @@ app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
   shopify.config.auth.callbackPath,
   shopify.auth.callback(),
+  appInstallMiddleware,
   shopify.redirectToShopifyOrAppRoot()
 );
 app.post(

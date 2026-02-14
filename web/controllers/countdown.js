@@ -1,4 +1,3 @@
-import Countdown from "../models/Countdown.js";
 import CountdownService from "../services/countdown.js";
 
 export const createCountdown = async (req, res) => {
@@ -54,8 +53,6 @@ export const getCountdowns = async (req, res) => {
             order = "desc",
             query = "",
             status,
-            startFrom,
-            startTo
         } = req.query;
 
         const result = await CountdownService.getCountdowns(shop, {
@@ -65,8 +62,6 @@ export const getCountdowns = async (req, res) => {
             order,
             query,
             status,
-            startFrom,
-            startTo
         });
 
         return res.json({
@@ -87,29 +82,21 @@ export const getCountdowns = async (req, res) => {
 export const updateCountdown = async (req, res) => {
     try {
         const { id } = req.params;
-
-        const updated = await Countdown.findByIdAndUpdate(
-            id,
-            req.body,
-            { new: true }
-        );
-
+        const updated = await CountdownService.updateCountdown(id, req.body);
         res.status(200).json({ success: true, item: updated });
     } catch (err) {
         console.error("Update Countdown Error:", err.message);
-        res.status(500).json({ success: false, message: "Failed to update countdown" });
+        res.status(400).json({ success: false, message: err.message });
     }
 };
 
 export const deleteCountdown = async (req, res) => {
     try {
         const { id } = req.params;
-
-        await Countdown.findByIdAndDelete(id);
-
+        await CountdownService.deleteCountdown(id);
         res.status(200).json({ success: true });
     } catch (err) {
         console.error("Delete Countdown Error:", err.message);
-        res.status(500).json({ success: false, message: "Failed to delete countdown" });
+        res.status(400).json({ success: false, message: err.message });
     }
 };

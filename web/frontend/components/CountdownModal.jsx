@@ -1,4 +1,4 @@
-import { Modal } from "@shopify/polaris";
+import { Frame, Modal } from "@shopify/polaris";
 import CountdownForm from "./CountdownForm";
 
 export default function CountdownModal({ active, onClose, timer }) {
@@ -11,9 +11,11 @@ export default function CountdownModal({ active, onClose, timer }) {
             secondaryActions={[]}
             large
         >
-            <Modal.Section>
-                <CountdownForm onClose={onClose} timer={timer} />
-            </Modal.Section>
+            <Frame>
+                <Modal.Section>
+                    <CountdownForm onClose={onClose} timer={timer} />
+                </Modal.Section>
+            </Frame>
         </Modal>
     );
 }

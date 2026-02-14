@@ -1,23 +1,12 @@
-import Countdown from "../models/Countdown.js";
+import CountdownService from "../services/countdown.js";
 
 export const getActiveCountdown = async (req, res) => {
     try {
         const { shop } = req.params;
-        console.log(shop)
-        const now = new Date();
 
-        const countdown = await Countdown.findOne({
-            shop,
-            isActive: true,
-            startAt: { $lte: now },
-            endAt: { $gte: now },
-        }).lean();
+        const countdown = await CountdownService.getActiveCountdown(shop);
 
-        if (!countdown) {
-            return res.json({ success: true, countdown: null });
-        }
-
-        res.json({
+        return res.json({
             success: true,
             countdown,
         });

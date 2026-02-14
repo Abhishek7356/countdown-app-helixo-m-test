@@ -5,7 +5,6 @@ const countdownSchema = new mongoose.Schema(
         shop: {
             type: String,
             required: true,
-            index: true,
         },
 
         title: {
@@ -21,13 +20,11 @@ const countdownSchema = new mongoose.Schema(
         startAt: {
             type: Date,
             required: true,
-            index: true,
         },
 
         endAt: {
             type: Date,
             required: true,
-            index: true,
         },
 
         bgColor: {
@@ -38,11 +35,6 @@ const countdownSchema = new mongoose.Schema(
         textColor: {
             type: String,
             default: "#ffffff",
-        },
-
-        fontSize: {
-            type: String,
-            default: "16px",
         },
 
         size: {
@@ -57,7 +49,8 @@ const countdownSchema = new mongoose.Schema(
 
         urgency: {
             type: String,
-            default: "none",
+            default: "pulse",
+            enum: ["pulse", "banner"],
         },
 
         isActive: {
@@ -67,6 +60,13 @@ const countdownSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+
+countdownSchema.index({ shop: 1, isActive: 1 });
+
+countdownSchema.index({ shop: 1, isActive: 1, startAt: 1 });
+
+countdownSchema.index({ title: "text" });
 
 const Countdown = mongoose.model("Countdown", countdownSchema);
 

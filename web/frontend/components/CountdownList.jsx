@@ -5,50 +5,36 @@ import {
     SkeletonBodyText,
     SkeletonDisplayText,
 } from "@shopify/polaris";
-import { useEffect, useState, useCallback } from "react";
+
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCountdowns } from "../store/countdownSlice";
+
 import CountdownFilters from "./CountdownFilters";
 import CountdownItem from "./CountdownItem";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function CountdownList({ onEdit }) {
-    const [timers, setTimers] = useState([]);
-    const [pagination, setPagination] = useState({});
-    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
+
+    const { timers, pagination, loading } = useSelector(
+        (state) => state.countdowns
+    );
+
     const [filters, setFilters] = useState({ query: "", status: undefined });
     const [page, setPage] = useState(1);
 
-    const fetchTimers = useCallback(async () => {
-        try {
-            setLoading(true);
-
-            const params = new URLSearchParams({
-                page,
-                limit: 5,
-                query: filters.query || "",
-            });
-
-            if (filters.status?.length) {
-                params.append("status", filters.status[0]);
-            }
-
-            const res = await fetch(`/api/countdown/list?${params}`);
-            const data = await res.json();
-
-            if (data.success) {
-                setTimers(data.items || []);
-                setPagination(data.pagination || {});
-            }
-        } catch (err) {
-            console.error("Fetch timers error:", err);
-        } finally {
-            setLoading(false);
-        }
-    }, [filters, page]);
+    const debouncedQuery = useDebounce(filters.query, 500);
 
     useEffect(() => {
-        fetchTimers();
-    }, [fetchTimers]);
+        dispatch(
+            fetchCountdowns({
+                page,
+                filters: { ...filters, query: debouncedQuery },
+            })
+        );
+    }, [dispatch, page, debouncedQuery, filters.status]);
 
-    // ✅ Create safe skeleton items
     const skeletonItems = Array.from({ length: 2 }).map((_, index) => ({
         id: `skeleton-${index}`,
         __skeleton: true,
@@ -68,7 +54,6 @@ export default function CountdownList({ onEdit }) {
                     />
                 }
                 renderItem={(item) => {
-                    // ✅ Skeleton rendering
                     if (item.__skeleton) {
                         return (
                             <ResourceList.Item id={item.id}>
@@ -82,13 +67,11 @@ export default function CountdownList({ onEdit }) {
                         );
                     }
 
-                    // ✅ Real item rendering
                     return (
                         <CountdownItem
                             key={item._id}
                             item={item}
                             onEdit={onEdit}
-                            refresh={fetchTimers}
                         />
                     );
                 }}

@@ -27,6 +27,7 @@ export default function CountdownFilters({ filters, setFilters }) {
         <Filters
             queryValue={filters.query}
             filters={filterOptions}
+            queryPlaceholder="Search timers"
             appliedFilters={
                 filters.status?.length
                     ? [
