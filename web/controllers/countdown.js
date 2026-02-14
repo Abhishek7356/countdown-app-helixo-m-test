@@ -49,8 +49,6 @@ export const getCountdowns = async (req, res) => {
         const {
             page = 1,
             limit = 10,
-            sortBy = "createdAt",
-            order = "desc",
             query = "",
             status,
         } = req.query;
@@ -58,8 +56,6 @@ export const getCountdowns = async (req, res) => {
         const result = await CountdownService.getCountdowns(shop, {
             page: Number(page),
             limit: Number(limit),
-            sortBy,
-            order,
             query,
             status,
         });

@@ -10,13 +10,11 @@ class CountdownService {
         const {
             page = 1,
             limit = 10,
-            sortBy = "createdAt",
-            order = "desc",
             query = "",
             status = "",
         } = options;
 
-        return `countdowns:${shop}:page=${page}:limit=${limit}:sort=${sortBy}:${order}:query=${query}:status=${status}`;
+        return `countdowns:${shop}:page=${page}:limit=${limit}:query=${query}:status=${status}`;
     }
 
     static generateActiveCacheKey(shop) {
@@ -94,14 +92,11 @@ class CountdownService {
         const {
             page = 1,
             limit = 10,
-            sortBy = "createdAt",
-            order = "desc",
             query,
             status,
         } = options;
 
         const skip = (page - 1) * limit;
-        const sortOrder = order === "asc" ? 1 : -1;
 
         const filter = { shop };
 
@@ -110,7 +105,7 @@ class CountdownService {
 
         const [items, total] = await Promise.all([
             Countdown.find(filter)
-                .sort({ [sortBy]: sortOrder })
+                .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
                 .lean(),
