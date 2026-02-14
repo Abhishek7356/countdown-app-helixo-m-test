@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     try {
         const res = await fetch(
-            `https://a847-2409-40f3-2a-c284-f43f-93b-e297-3b62.ngrok-free.app/storefront/active/${shop}`,
+            `https://fadf-2409-40f3-1a-700f-8c68-65ac-f7fe-9e9b.ngrok-free.app/storefront/active/${shop}`,
             { headers: { 'ngrok-skip-browser-warning': 'true' } }
         );
 
